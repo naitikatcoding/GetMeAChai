@@ -6,9 +6,9 @@ const Footer = () => {
     <div className="w-screen navbarcolor text-center p-5">
       <div className="flex justify-between px-5">
         <div className="flex flex-col text-left gap-2">
-          <p>Copyright &copy; 2024 Get Me A Chai | All rights reserved!</p>
+          <p>Copyright &copy; 2026 Get Me A Chai | All rights reserved!</p>
           <p className="text-sm opacity-50 pb-5">
-            Made by Naman Khandelwal with ❤
+            Made by Naitik Gupta with ❤
           </p>
           <ul className="gap-5 flex">
             <Link href="/about">About us</Link>
@@ -24,7 +24,7 @@ const Footer = () => {
             <a
               href="https://github.com/naitikatcoding"
               target="_blank"
-              className="rounded-4xl py-2.5 px-6 border border-gray-400 flex gap-1.5"
+              className="rounded-4xl py-2.5 px-6 border border-gray-400 flex gap-1.5 hover:bg-black"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,7 @@ const Footer = () => {
             <a
               href="https://www.linkedin.com/in/naitikatwork/"
               target="_blank"
-              className="rounded-4xl py-2.5 px-6 border border-gray-400 flex gap-1.5"
+              className="rounded-4xl py-2.5 px-6 border border-gray-400 flex gap-1.5 hover:bg-blue-600"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

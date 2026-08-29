@@ -20,7 +20,7 @@ const page = () => {
         <span className="mb-2">
           Follow us on social media for the latest updates and news:
         </span>
-        <div className="text-yellow-300 flex flex-col gap-5">
+        <div className="text-yellow-300 flex justify-center gap-5">
           <a href="https://github.com/naitikatcoding" target="_blank">
             Github
           </a>
@@ -32,7 +32,7 @@ const page = () => {
           </a>
         </div>
         <div className="flex justify-center">
-          <div className="bg-gray-500 opacity-90 w-[80vw] h-1 mt-16.5"></div>
+          <div className="bg-gray-500 opacity-90 w-[90vw] h-1 mt-16.5"></div>
         </div>
       </div>
     </div>
