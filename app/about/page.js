@@ -115,7 +115,7 @@ const page = () => {
           support and bring your visions to life.
         </p>
         <ul className="flex mt-20 gap-28 justify-center opacity-90">
-          <li className="aboutboxcolor border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
+          <li className="bg-[#101013] border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
             <div className="mb-3 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-sm w-12 h-12">
               {phoneicon}
             </div>
@@ -125,7 +125,7 @@ const page = () => {
               schemes to fonts, to match your unique style.
             </p>
           </li>
-          <li className="aboutboxcolor border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
+          <li className="bg-[#101013] border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
             <div className="mb-3 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-sm w-12 h-12">
               {thunder}
             </div>
@@ -135,7 +135,7 @@ const page = () => {
               supporters can access your campaign quickly and easily.
             </p>
           </li>
-          <li className="aboutboxcolor border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
+          <li className="bg-[#101013] border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
             <div className="mb-3 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-sm w-12 h-12">
               {pencil}
             </div>

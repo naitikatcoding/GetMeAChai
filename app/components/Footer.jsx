@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="w-screen navbarcolor text-center p-5">
+    <div className="w-screen bg-[#111827] text-center p-5">
       <div className="flex justify-between px-5">
         <div className="flex flex-col text-left gap-2">
           <p>Copyright &copy; 2026 Get Me A Chai | All rights reserved!</p>

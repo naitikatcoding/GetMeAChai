@@ -22,7 +22,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="navbarcolor px-6">
+      <nav className="bg-[#111827] px-6">
         <ul className="flex p-3.5 text-white font-bold justify-between items-center">
           <li>
             <Link href="/" className="text-lg">
@@ -30,8 +30,8 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="flex items-center gap-4">
-            <span className="searchicon py-2 px-5 rounded-lg">{navicon}</span>
-            <button className="contact py-2.5 px-5 rounded-lg text-sm">Login</button>
+            <span className="bg-[#2563EB] py-2 px-5 rounded-lg">{navicon}</span>
+            <button className="bg-linear-[#45CC90,#2C7AD7] py-2.5 px-5 rounded-lg text-sm">Login</button>
           </li>
         </ul>
       </nav>

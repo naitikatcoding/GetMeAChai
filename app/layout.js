@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -17,6 +18,7 @@ export const metadata = {
   title: "Get Me A Chai - Fund your project with chai",
   description:
     "This website helps influencers and content creators to raise funds from their fans and community",
+  
 };
 
 export default function RootLayout({ children }) {
