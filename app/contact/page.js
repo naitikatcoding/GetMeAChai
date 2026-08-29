@@ -3,7 +3,7 @@ import React from "react";
 const page = () => {
   return (
     <div>
-      <div className="flex flex-col text-center justify-center my-20">
+      <div className="flex flex-col text-center justify-center my-15">
         <span className="font-extrabold text-4xl mb-1">Contact Us</span>
         <span className="font-bold text-2xl mb-20">
           We&apos;d love to hear from you!
@@ -30,6 +30,9 @@ const page = () => {
           <a href="https://www.instagram.com/codedbynaitik/" target="_blank">
             Instagram
           </a>
+        </div>
+        <div className="flex justify-center">
+          <div className="bg-gray-500 opacity-90 w-[80vw] h-1 mt-16.5"></div>
         </div>
       </div>
     </div>
