@@ -18,8 +18,8 @@ export default function Home() {
           followers. Start Now!
         </p>
         <div className="gap-4 flex">
-          <button className="contact py-2.5 px-4 rounded-lg">Start Here</button>
-          <button className="contact py-2.5 px-4 rounded-lg">Read More</button>
+          <button className="bg-[#2563EB] py-2.5 px-4 rounded-lg">Start Here</button>
+          <button className="bg-[#2563EB] contact py-2.5 px-4 rounded-lg">Read More</button>
         </div>
       </div>
 
