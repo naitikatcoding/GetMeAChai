@@ -1,5 +1,9 @@
+"use client"
 import React from "react";
+import { useSession, signIn, signOut } from "next-auth/react"
 import Link from "next/link";
+import GitLab from "next-auth/providers/gitlab";
+import Github from "next-auth/providers/github";
 
 const Navbar = () => {
   const navicon = (
@@ -31,7 +35,9 @@ const Navbar = () => {
           </li>
           <li className="flex items-center gap-4">
             <span className="bg-[#2563EB] py-2 px-5 rounded-lg">{navicon}</span>
-            <button className="bg-linear-[#45CC90,#2C7AD7] py-2.5 px-5 rounded-lg text-sm">Login</button>
+            <Link href={"/login"}>
+              <button className="bg-linear-[#45CC90,#2C7AD7] py-2.5 px-5 rounded-lg text-sm cursor-pointer">Login</button>
+            </Link>
           </li>
         </ul>
       </nav>
