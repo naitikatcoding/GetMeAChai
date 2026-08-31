@@ -10,6 +10,7 @@ const Username = async ({ params }) => {
         width={860}
         height={300}
         priority
+        unoptimized
         className="rounded-lg object-cover w-full" />
         <div className="absolute top-90 right-180"> 
           <Image src={"https://cdn.britannica.com/11/190811-050-4875CAA7/Sheryl-Lee-Laura-Palmer-Twin-Peaks.jpg"} alt="user pfp"

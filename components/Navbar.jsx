@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
+import teaicon from "../app/icon.svg";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -10,8 +12,9 @@ const Navbar = () => {
   return (
     <nav className="bg-[#111827] px-6">
       <ul className="flex p-3.5 text-white font-bold justify-between items-center">
-        <li>
-          <Link href="/" className="text-lg">
+        <li className="flex items-center">
+          <Image src={teaicon} alt="Profile" width={40} height={40} />
+          <Link href="/" className="text-lg pt-2">
             GetMeAChai!
           </Link>
         </li>
