@@ -1,6 +1,6 @@
 import React from "react";
 
-const page = () => {
+const contact = () => {
   return (
     <div>
       <div className="flex flex-col text-center justify-center my-15">
@@ -39,4 +39,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default contact;

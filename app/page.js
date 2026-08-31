@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Navbar from "../components/Navbar";
+import Link from "next/link";
 
 export default function Home() {
   const chai = "https://get-me-chai.vercel.app/tea.gif";
@@ -18,8 +19,16 @@ export default function Home() {
           followers. Start Now!
         </p>
         <div className="gap-4 flex">
-          <button className="bg-[#2563EB] py-2.5 px-4 rounded-lg">Start Here</button>
-          <button className="bg-[#2563EB] contact py-2.5 px-4 rounded-lg">Read More</button>
+          <Link href={"/login"}>
+            <button className="bg-[#2563EB] py-2.5 px-4 rounded-lg hover:bg-blue-500 cursor-pointer">
+              Start Here
+            </button>
+          </Link>
+          <a href="#endpage">
+            <button className="bg-[#2563EB] contact py-2.5 px-4 rounded-lg  hover:bg-blue-500 cursor-pointer">
+              Read More
+            </button>
+          </a>
         </div>
       </div>
 
@@ -69,7 +78,9 @@ export default function Home() {
       <div className="bg-gray-600 w-screen h-1 mt-16.5"></div>
 
       <div className="text-center flex flex-col gap-15 py-13 mx-9">
-        <span className="text-2xl font-bold">Learn More About Us</span>
+        <span id="endpage" className="text-2xl font-bold">
+          Learn More About Us
+        </span>
         <p>
           At Get Me A Chai, we are dedicated to supporting developers, creators,
           and influencers by connecting them with their supporters. Our platform

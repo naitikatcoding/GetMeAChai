@@ -1,6 +1,6 @@
 import React from "react";
 
-const page = () => {
+const about = () => {
   const phoneicon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -151,4 +151,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default about;

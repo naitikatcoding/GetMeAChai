@@ -8,6 +8,14 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "c10.patreonusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.britannica.com",
+      },
     ],
   },
   reactCompiler: true,
