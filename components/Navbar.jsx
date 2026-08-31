@@ -14,7 +14,7 @@ const Navbar = () => {
       <ul className="flex p-3.5 text-white font-bold justify-between items-center">
         <li className="flex items-center">
           <Image src={teaicon} alt="Profile" width={40} height={40} />
-          <Link href="/" className="text-lg pt-2">
+          <Link href="/" className="text-lg pt-2.5">
             GetMeAChai!
           </Link>
         </li>
