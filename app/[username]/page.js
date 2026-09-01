@@ -1,4 +1,5 @@
 import Image from "next/image";
+import user from "../user.gif";
 
 const Username = async ({ params }) => {
   const { username } = await params;
@@ -43,42 +44,84 @@ const Username = async ({ params }) => {
       </div>
 
       <div className="flex flex-wrap justify-center gap-6 w-[80%] mx-auto mb-15 mt-2.5 px-4">
-        
         <div className="w-full sm:w-80 md:w-96 min-h-80 bg-gray-700 rounded-lg p-6 flex flex-col items-start text-left">
           <h2 className="text-xl font-bold mb-4">Supporters</h2>
-          <ul className="w-full space-y-2 text-sm">
-            {[...Array(6)].map((_, i) => (
-              <li key={i}>
-                Shubham donated $30 with a message &quot; &quot;
-              </li>
-            ))}
+          <ul className="w-full space-y-3 text-sm">
+            <li className="flex items-center gap-3 bg-gray-800/50 p-2.5 rounded-lg">
+              <Image
+                src={user}
+                alt="User Avatar"
+                width={32}
+                height={32}
+                className="rounded-full object-cover"
+              />
+              <span>
+                Shubham donated <span className="font-bold text-green-400">$30</span> with a message &quot;&quot;
+              </span>
+            </li>
+            <li className="flex items-center gap-3 bg-gray-800/50 p-2.5 rounded-lg">
+              <Image
+                src={user}
+                alt="User Avatar"
+                width={32}
+                height={32}
+                className="rounded-full object-cover"
+              />
+              <span>
+                Shubham donated <span className="font-bold text-green-400">$30</span> with a message &quot;&quot;
+              </span>
+            </li>
+            <li className="flex items-center gap-3 bg-gray-800/50 p-2.5 rounded-lg">
+              <Image
+                src={user}
+                alt="User Avatar"
+                width={32}
+                height={32}
+                className="rounded-full object-cover"
+              />
+              <span>
+                Shubham donated <span className="font-bold text-green-400">$30</span> with a message &quot;&quot;
+              </span>
+            </li>
+            <li className="flex items-center gap-3 bg-gray-800/50 p-2.5 rounded-lg">
+              <Image
+                src={user}
+                alt="User Avatar"
+                width={32}
+                height={32}
+                className="rounded-full object-cover"
+              />
+              <span>
+                Shubham donated <span className="font-bold text-green-400">$30</span> with a message &quot;&quot;
+              </span>
+            </li>
           </ul>
         </div>
 
         <div className="w-full sm:w-80 md:w-96 min-h-80 bg-gray-700 rounded-lg p-6 flex flex-col items-start">
           <h2 className="text-xl font-bold mb-6">Make a Payment</h2>
-          
+
           <div className="w-full space-y-4">
-            <input 
-              type="text" 
-              placeholder="Enter Name" 
-              className="w-full bg-gray-800 p-3 rounded-md text-sm border border-gray-600 focus:outline-none focus:border-indigo-500" 
+            <input
+              type="text"
+              placeholder="Enter Name"
+              className="w-full bg-gray-800 p-3 rounded-md text-sm border border-gray-600 focus:outline-none focus:border-indigo-500"
             />
-            <input 
-              type="text" 
-              placeholder="Enter Message" 
-              className="w-full bg-gray-800 p-3 rounded-md text-sm border border-gray-600 focus:outline-none focus:border-indigo-500" 
+            <input
+              type="text"
+              placeholder="Enter Message"
+              className="w-full bg-gray-800 p-3 rounded-md text-sm border border-gray-600 focus:outline-none focus:border-indigo-500"
             />
-            <input 
-              type="text" 
-              placeholder="Enter Amount" 
-              className="w-full bg-gray-800 p-3 rounded-md text-sm border border-gray-600 focus:outline-none focus:border-indigo-500" 
+            <input
+              type="text"
+              placeholder="Enter Amount"
+              className="w-full bg-gray-800 p-3 rounded-md text-sm border border-gray-600 focus:outline-none focus:border-indigo-500"
             />
-            
+
             <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-md text-sm transition duration-150">
               Pay
             </button>
-            
+
             <div className="flex gap-2 pt-2">
               <button className="bg-gray-800 hover:bg-gray-600 py-1.5 px-3 rounded text-xs border border-gray-600">
                 Pay $10
@@ -92,7 +135,6 @@ const Username = async ({ params }) => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
