@@ -41,7 +41,7 @@ export default function Home() {
         <ul className="flex justify-around text-center">
           <li className="flex flex-col items-center gap-5">
             <Image
-              className="rounded-full"
+              className="rounded-full w-auto h-auto"
               width={100}
               height={100}
               src={man}

@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import mongoose from "mongoose";
+import User from "@/models/User.js";
 
 export const authOptions = {
   providers: [
@@ -16,18 +18,34 @@ export const authOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      const isAllowedToSignIn = true;
+    async signIn({ user, account, profile }) {
+      try {
+        console.log("User:", user);
+        console.log("Email:", user.email);
+        console.log("Account:", account);
+        console.log("Profile:", profile);
 
-      if (isAllowedToSignIn) {
-        if (account.provider == "github") {
-          const client = await mongoose.connect();
+        await mongoose.connect("mongodb://localhost:27017/chai");
 
-          // const currentUser = await client
-          //   .db("user")
-          //   .collection("users")
-          //   .findOne({ email: email });
+        const currentUser = await User.findOne({
+          email: user.email,
+        });
+
+        if (!currentUser) {
+          const newUser = await User.create({
+            email: user.email,
+            username: user.email.split("@")[0],
+          });
+
+          user.name = newUser.username;
+        } else {
+          user.name = currentUser.username;
         }
+
+        return true;
+      } catch (error) {
+        console.error("Sign-in error:", error);
+        return false;
       }
     },
   },
