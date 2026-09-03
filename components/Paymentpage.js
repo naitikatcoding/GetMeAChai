@@ -4,34 +4,46 @@ import React, { useState } from "react";
 import Script from "next/script";
 import Image from "next/image";
 import user from "../app/user.gif";
-
-// Import your user image later
-// import user from "@/public/user.png";
+import { initiate } from "@/actions/Useraction";
+import payments from "razorpay/dist/types/payments";
 
 const Paymentpage = ({ username }) => {
-  const pay = (amount, orderId) => {
-    var option = {
-      key: "YOUR_KEY_ID", // Enter the Key ID generated from the Dashboard
-      amount: "50000", // Amount is in currency subunits.
+  const [paymentform, setpaymentform] = useState({second});
+  const pay = async (amount, orderId) => {
+    let a = await initiate(amount, session?.user.name, paymentform);
+    let orderID = a.id;
+    const options = {
+      key: process.env.NEXT_PUBLIC_KEY_ID,
+      amount: amount,
       currency: "INR",
-      name: "Acme Corp",
+      name: "Get Me A Chai",
       description: "Test Transaction",
       image: "https://example.com/your_logo",
-      order_id: "order_IluGWxBm9U8zJ8", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-      callback_url: "https://eneqd3r9zrjok.x.pipedream.net/",
+
+      order_id: orderId,
+
+      callback_url: process.env.NEXT_PUBLIC_CALLBACK_URL,
+
       prefill: {
         name: "<name>",
         email: "<email>",
         contact: "<phone>",
       },
+
       notes: {
         address: "Razorpay Corporate Office",
       },
+
       theme: {
         color: "#3399cc",
       },
     };
+
+    const rzp1 = new window.Razorpay(options);
+
+    rzp1.open();
   };
+
   return (
     <>
       <Script
@@ -95,7 +107,6 @@ const Paymentpage = ({ username }) => {
                   key={index}
                   className="flex items-center gap-3 rounded-lg bg-gray-800/50 p-2.5"
                 >
-                  {/* KEEPING YOUR USER VARIABLE */}
                   <Image
                     src={user}
                     alt="Supporter avatar"
@@ -118,8 +129,7 @@ const Paymentpage = ({ username }) => {
           <article className="min-h-80 w-full rounded-lg bg-gray-700 p-6 sm:w-[28rem] md:w-[32rem]">
             <h2 className="mb-6 text-xl font-bold">Make a Payment</h2>
 
-            <form onSubmit={handlePayment} className="w-full space-y-4">
-              {/* Name */}
+            <div className="w-full space-y-4">
               <div>
                 <label htmlFor="name" className="sr-only">
                   Your name
@@ -135,7 +145,6 @@ const Paymentpage = ({ username }) => {
                 />
               </div>
 
-              {/* Message */}
               <div>
                 <label htmlFor="message" className="sr-only">
                   Your message
@@ -150,7 +159,6 @@ const Paymentpage = ({ username }) => {
                 />
               </div>
 
-              {/* Amount */}
               <div>
                 <label htmlFor="amount" className="sr-only">
                   Payment amount
@@ -162,27 +170,24 @@ const Paymentpage = ({ username }) => {
                   type="number"
                   min="1"
                   step="1"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
                   placeholder="Enter Amount"
                   inputMode="numeric"
                   className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
                 />
               </div>
 
-              {/* Pay */}
               <button
-                type="submit"
+                type="button"
+                onClick={() => pay(50000, "order_IluGWxBm9U8zJ8")}
                 className="w-full rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700"
               >
                 Pay
               </button>
 
-              {/* Quick Payment Buttons */}
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setAmount("10")}
+                  onClick={() => pay(1000, "order_IluGWxBm9U8zJ8")}
                   className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹10
@@ -190,7 +195,7 @@ const Paymentpage = ({ username }) => {
 
                 <button
                   type="button"
-                  onClick={() => setAmount("20")}
+                  onClick={() => pay(2000, "order_IluGWxBm9U8zJ8")}
                   className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹20
@@ -198,13 +203,13 @@ const Paymentpage = ({ username }) => {
 
                 <button
                   type="button"
-                  onClick={() => setAmount("30")}
+                  onClick={() => pay(3000, "order_IluGWxBm9U8zJ8")}
                   className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹30
                 </button>
               </div>
-            </form>
+            </div>
           </article>
         </section>
       </main>
