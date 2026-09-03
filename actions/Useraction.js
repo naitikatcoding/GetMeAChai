@@ -3,30 +3,29 @@
 import Razorpay from "razorpay";
 import Payment from "@/models/Payment";
 import connectDb from "@/db/connectDb";
-import User from "@/models/User";
 
 export const initiate = async (amount, to_username, paymentform) => {
   await connectDb();
-  const Razorpay = require("razorpay");
-  var instance = new Razorpay({
-    key_id: process.env.KEY_ID,
-    key_secret: process.env.KEY_SECRET,
+
+  const instance = new Razorpay({
+    key_id: process.env.NEXT_PUBLIC_KEY_ID,
+    key_secret: process.env.NEXT_PUBLIC_KEY_SECRET,
   });
 
-  let options = {
+  const options = {
     amount: Number.parseInt(amount),
     currency: "INR",
   };
 
-  let x = await instance.orders.create(options);
+  const x = await instance.orders.create(options);
 
   await Payment.create({
-    oid: x.id,
+    o_id: x.id,
     amount: amount,
-    to_username: to_username,
-    name: paymentform.name,
+    to_user: to_username,
+    user_name: paymentform.user_name,
     message: paymentform.message,
   });
+
   return x;
-   
 };

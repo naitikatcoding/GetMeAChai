@@ -5,13 +5,29 @@ import Script from "next/script";
 import Image from "next/image";
 import user from "../app/user.gif";
 import { initiate } from "@/actions/Useraction";
-import payments from "razorpay/dist/types/payments";
+import { useSession } from "next-auth/react";
 
 const Paymentpage = ({ username }) => {
-  const [paymentform, setpaymentform] = useState({second});
-  const pay = async (amount, orderId) => {
-    let a = await initiate(amount, session?.user.name, paymentform);
-    let orderID = a.id;
+  const [paymentform, setpaymentform] = useState({
+    user_name: "",
+    message: "",
+    amount: "",
+  });
+
+  const { data: session } = useSession();
+
+  const handlechange = (e) => {
+    setpaymentform({
+      ...paymentform,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const pay = async (amount) => {
+    const a = await initiate(amount, username, paymentform);
+
+    const orderId = a.id;
+
     const options = {
       key: process.env.NEXT_PUBLIC_KEY_ID,
       amount: amount,
@@ -19,15 +35,12 @@ const Paymentpage = ({ username }) => {
       name: "Get Me A Chai",
       description: "Test Transaction",
       image: "https://example.com/your_logo",
-
       order_id: orderId,
-
       callback_url: process.env.NEXT_PUBLIC_CALLBACK_URL,
 
       prefill: {
-        name: "<name>",
-        email: "<email>",
-        contact: "<phone>",
+        name: session?.user?.name || "",
+        email: session?.user?.email || "",
       },
 
       notes: {
@@ -40,7 +53,6 @@ const Paymentpage = ({ username }) => {
     };
 
     const rzp1 = new window.Razorpay(options);
-
     rzp1.open();
   };
 
@@ -130,55 +142,43 @@ const Paymentpage = ({ username }) => {
             <h2 className="mb-6 text-xl font-bold">Make a Payment</h2>
 
             <div className="w-full space-y-4">
-              <div>
-                <label htmlFor="name" className="sr-only">
-                  Your name
-                </label>
+              <input
+                id="user_name"
+                name="user_name"
+                value={paymentform.user_name}
+                onChange={handlechange}
+                type="text"
+                placeholder="Enter Name"
+                autoComplete="name"
+                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+              />
 
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="Enter Name"
-                  autoComplete="name"
-                  className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
-                />
-              </div>
+              <input
+                id="message"
+                name="message"
+                value={paymentform.message}
+                onChange={handlechange}
+                type="text"
+                placeholder="Enter Message"
+                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+              />
 
-              <div>
-                <label htmlFor="message" className="sr-only">
-                  Your message
-                </label>
-
-                <input
-                  id="message"
-                  name="message"
-                  type="text"
-                  placeholder="Enter Message"
-                  className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="amount" className="sr-only">
-                  Payment amount
-                </label>
-
-                <input
-                  id="amount"
-                  name="amount"
-                  type="number"
-                  min="1"
-                  step="1"
-                  placeholder="Enter Amount"
-                  inputMode="numeric"
-                  className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
-                />
-              </div>
+              <input
+                id="amount"
+                name="amount"
+                value={paymentform.amount}
+                onChange={handlechange}
+                type="number"
+                min="1"
+                step="1"
+                placeholder="Enter Amount"
+                inputMode="numeric"
+                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+              />
 
               <button
                 type="button"
-                onClick={() => pay(50000, "order_IluGWxBm9U8zJ8")}
+                onClick={() => pay(50000)}
                 className="w-full rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700"
               >
                 Pay
@@ -187,7 +187,7 @@ const Paymentpage = ({ username }) => {
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => pay(1000, "order_IluGWxBm9U8zJ8")}
+                  onClick={() => pay(1000)}
                   className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹10
@@ -195,7 +195,7 @@ const Paymentpage = ({ username }) => {
 
                 <button
                   type="button"
-                  onClick={() => pay(2000, "order_IluGWxBm9U8zJ8")}
+                  onClick={() => pay(2000)}
                   className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹20
@@ -203,7 +203,7 @@ const Paymentpage = ({ username }) => {
 
                 <button
                   type="button"
-                  onClick={() => pay(3000, "order_IluGWxBm9U8zJ8")}
+                  onClick={() => pay(3000)}
                   className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹30
