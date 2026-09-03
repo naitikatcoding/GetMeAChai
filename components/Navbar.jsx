@@ -60,11 +60,11 @@ const Navbar = () => {
                     </li>
                     <li>
                       <Link
-                        href="/settings"
+                        href={`/${session.user.name}`}
                         onClick={() => setIsOpen(false)}
                         className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
                       >
-                        Settings
+                        Your page
                       </Link>
                     </li>
                     <li>
