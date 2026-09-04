@@ -1,32 +1,72 @@
 import { NextResponse } from "next/server";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
 import Payment from "@/models/Payment";
-import Razorpay from "razorpay";
 import connectDb from "@/db/connectDb";
 import User from "@/models/User";
 
 export const POST = async (req) => {
-    await connectDb()
-    let body = await req.formData()
-    body = Object.fromEntries(body)
+  await connectDb();
 
-    let p = await Payment.findOne({ oid: body.razorpay_order_id })
-    if (!p) {
-        return NextResponse.json({ success: false, message: "Order Id not found" })
-    }
+  let body = await req.formData();
+  body = Object.fromEntries(body);
 
-    let user = await User.findOne({ username: p.to_user })
-    const secret = user.razorpaysecret
+  const orderId = body.razorpay_order_id;
 
-    let xx = validatePaymentVerification({ "order_id": body.razorpay_order_id, "payment_id": body.razorpay_payment_id }, body.razorpay_signature, secret)
+  // Check if order exists in the database (checking both o_id and oid for compatibility)
+  let p = await Payment.findOne({
+    $or: [{ o_id: orderId }, { oid: orderId }],
+  });
 
-    if (xx) {
-        const updatedPayment = await Payment.findOneAndUpdate({ oid: body.razorpay_order_id }, { done: "true" }, { new: true })
-        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/${updatedPayment.to_user}?paymentdone=true`)
-    }
+  if (!p) {
+    return NextResponse.json(
+      { success: false, message: "Order Id not found" },
+      { status: 404 }
+    );
+  }
 
-    else {
-        return NextResponse.json({ success: false, message: "Payment Verification Failed" })
-    }
+  // Fetch the creator user to check if they have custom Razorpay secret,
+  // otherwise fallback to platform secret from .env
+  let user = await User.findOne({ username: p.to_user });
+  const secret = (
+    user?.razorpaysecret ||
+    process.env.KEY_SECRET ||
+    process.env.NEXT_PUBLIC_KEY_SECRET ||
+    ""
+  ).trim();
 
-}
+  let xx = false;
+  try {
+    xx = validatePaymentVerification(
+      {
+        order_id: body.razorpay_order_id,
+        payment_id: body.razorpay_payment_id,
+      },
+      body.razorpay_signature,
+      secret
+    );
+  } catch (err) {
+    console.error("Signature verification error:", err);
+    xx = false;
+  }
+
+  if (xx) {
+    // Update payment as Done
+    const updatedPayment = await Payment.findOneAndUpdate(
+      { $or: [{ o_id: orderId }, { oid: orderId }] },
+      { Done: true },
+      { new: true }
+    );
+
+    // Redirect with HTTP 303 (See Other) so browser converts POST to GET
+    const redirectUrl = new URL(
+      `/${updatedPayment.to_user}?paymentdone=true`,
+      req.url
+    );
+    return NextResponse.redirect(redirectUrl, 303);
+  } else {
+    return NextResponse.json(
+      { success: false, message: "Payment Verification Failed" },
+      { status: 400 }
+    );
+  }
+};
