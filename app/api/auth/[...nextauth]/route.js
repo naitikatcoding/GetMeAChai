@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import mongoose from "mongoose";
 import User from "@/models/User.js";
+import connectDb from "@/db/connectDb";
 
 export const authOptions = {
   providers: [
@@ -25,7 +25,8 @@ export const authOptions = {
         console.log("Account:", account);
         console.log("Profile:", profile);
 
-        await mongoose.connect("mongodb://localhost:27017/chai");
+        await connectDb();
+
 
         const currentUser = await User.findOne({
           email: user.email,

@@ -6,6 +6,7 @@ import Image from "next/image";
 import user from "../app/user.gif";
 import { initiate } from "@/actions/Useraction";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 const Paymentpage = ({ username }) => {
   const [paymentform, setpaymentform] = useState({
@@ -14,7 +15,11 @@ const Paymentpage = ({ username }) => {
     amount: "",
   });
 
+  const searchParams = useSearchParams();
+  const paymentDone = searchParams.get("paymentdone") === "true";
+
   const { data: session } = useSession();
+
 
   const handlechange = (e) => {
     setpaymentform({
@@ -28,18 +33,24 @@ const Paymentpage = ({ username }) => {
 
     const orderId = a.id;
 
+    // Use current origin so callback works regardless of port or domain
+    const callbackUrl =
+      typeof window !== "undefined" && window.location.origin
+        ? `${window.location.origin}/api/razorpay`
+        : (process.env.NEXT_PUBLIC_CALLBACK_URL || "http://localhost:3000/api/razorpay");
+
     const options = {
-      key: process.env.NEXT_PUBLIC_KEY_ID,
+      key: (process.env.NEXT_PUBLIC_KEY_ID || "").trim(),
       amount: amount,
       currency: "INR",
       name: "Get Me A Chai",
       description: "Test Transaction",
       image: "https://example.com/your_logo",
       order_id: orderId,
-      callback_url: process.env.NEXT_PUBLIC_CALLBACK_URL,
+      callback_url: callbackUrl,
 
       prefill: {
-        name: session?.user?.name || "",
+        name: paymentform.user_name || session?.user?.name || "",
         email: session?.user?.email || "",
       },
 
@@ -63,6 +74,7 @@ const Paymentpage = ({ username }) => {
         strategy="afterInteractive"
       />
 
+
       <main className="w-full text-white">
         {/* Banner */}
         <section
@@ -84,7 +96,7 @@ const Paymentpage = ({ username }) => {
         <section className="flex flex-col items-center">
           <div className="relative z-10 -mt-12.5 h-25 w-25 overflow-hidden rounded-full border-4 border-black">
             <Image
-              src="https://cdn.britannica.com/11/190811-050-4875CAA/Sheryl-Lee-Laura-Palmer-Twin-Peaks.jpg"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROTXbyHFWAHpGLA25WVL2_tx4NEY8RFO-6l6qVMPFHDw&s=10"
               alt={`${username} profile picture`}
               fill
               priority
@@ -176,19 +188,30 @@ const Paymentpage = ({ username }) => {
                 className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
               />
 
+              {paymentDone && (
+                <div className="rounded-md bg-green-500/20 border border-green-500 p-3 text-center text-sm font-medium text-green-300">
+                  🎉 Thank you for your support! Your payment was successful.
+                </div>
+              )}
+
               <button
                 type="button"
-                onClick={() => pay(50000)}
-                className="w-full rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700"
+                onClick={() => {
+                  const amt = paymentform.amount
+                    ? Number.parseInt(paymentform.amount) * 100
+                    : 50000;
+                  pay(amt);
+                }}
+                className="w-full rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700 cursor-pointer"
               >
-                Pay
+                Pay {paymentform.amount ? `₹${paymentform.amount}` : ""}
               </button>
 
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => pay(1000)}
-                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
+                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
                 >
                   Pay ₹10
                 </button>
@@ -196,7 +219,7 @@ const Paymentpage = ({ username }) => {
                 <button
                   type="button"
                   onClick={() => pay(2000)}
-                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
+                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
                 >
                   Pay ₹20
                 </button>
@@ -204,11 +227,12 @@ const Paymentpage = ({ username }) => {
                 <button
                   type="button"
                   onClick={() => pay(3000)}
-                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
+                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
                 >
                   Pay ₹30
                 </button>
               </div>
+
             </div>
           </article>
         </section>
