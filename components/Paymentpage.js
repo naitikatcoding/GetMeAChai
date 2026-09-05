@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Script from "next/script";
 import Image from "next/image";
 import user from "../app/user.gif";
-import { initiate } from "@/actions/Useraction";
+import { initiate, fetchUser, fetchpayments } from "@/actions/Useraction";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
@@ -15,11 +15,13 @@ const Paymentpage = ({ username }) => {
     amount: "",
   });
 
+  const [currentUser, setcurrentUser] = useState({});
+  const [Payment, setPayment] = useState([]);
+
   const searchParams = useSearchParams();
   const paymentDone = searchParams.get("paymentdone") === "true";
 
   const { data: session } = useSession();
-
 
   const handlechange = (e) => {
     setpaymentform({
@@ -28,43 +30,98 @@ const Paymentpage = ({ username }) => {
     });
   };
 
-  const pay = async (amount) => {
-    const a = await initiate(amount, username, paymentform);
+  useEffect(() => {
+    if (!username) return;
 
-    const orderId = a.id;
+    let cancelled = false;
 
-    // Use current origin so callback works regardless of port or domain
-    const callbackUrl =
-      typeof window !== "undefined" && window.location.origin
-        ? `${window.location.origin}/api/razorpay`
-        : (process.env.NEXT_PUBLIC_CALLBACK_URL || "http://localhost:3000/api/razorpay");
+    const loadData = async () => {
+      try {
+        const [u, dbpayment] = await Promise.all([
+          fetchUser(username),
+          fetchpayments(username),
+        ]);
 
-    const options = {
-      key: (process.env.NEXT_PUBLIC_KEY_ID || "").trim(),
-      amount: amount,
-      currency: "INR",
-      name: "Get Me A Chai",
-      description: "Test Transaction",
-      image: "https://example.com/your_logo",
-      order_id: orderId,
-      callback_url: callbackUrl,
+        if (cancelled) return;
 
-      prefill: {
-        name: paymentform.user_name || session?.user?.name || "",
-        email: session?.user?.email || "",
-      },
+        if (u) {
+          setcurrentUser(u);
+        } else {
+          setcurrentUser({});
+        }
 
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
+        console.log("Payments:", dbpayment);
 
-      theme: {
-        color: "#3399cc",
-      },
+        setPayment(dbpayment || []);
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Error fetching user/payment data:", error);
+        }
+      }
     };
 
-    const rzp1 = new window.Razorpay(options);
-    rzp1.open();
+    loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [username]);
+
+  const pay = async (amount) => {
+    try {
+      if (!window.Razorpay) {
+        console.error("Razorpay script has not loaded yet.");
+        alert("Payment system is still loading. Please try again.");
+        return;
+      }
+
+      const a = await initiate(amount, username, paymentform);
+
+      if (!a || !a.id) {
+        console.error("Razorpay order was not created.");
+        alert("Unable to create payment order. Please try again.");
+        return;
+      }
+
+      const orderId = a.id;
+
+      const callbackUrl =
+        typeof window !== "undefined" && window.location.origin
+          ? `${window.location.origin}/api/razorpay`
+          : process.env.NEXT_PUBLIC_CALLBACK_URL ||
+            "http://localhost:3000/api/razorpay";
+
+      const options = {
+        key: (process.env.NEXT_PUBLIC_KEY_ID || "").trim(),
+        amount: amount,
+        currency: "INR",
+        name: "Get Me A Chai",
+        description: "Test Transaction",
+        image: "/cover.gif",
+        order_id: orderId,
+        callback_url: callbackUrl,
+
+        prefill: {
+          name: paymentform.user_name || session?.user?.name || "",
+          email: session?.user?.email || "",
+        },
+
+        notes: {
+          address: "Razorpay Corporate Office",
+        },
+
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const rzp1 = new window.Razorpay(options);
+
+      rzp1.open();
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("Something went wrong while starting the payment.");
+    }
   };
 
   return (
@@ -74,7 +131,6 @@ const Paymentpage = ({ username }) => {
         strategy="afterInteractive"
       />
 
-
       <main className="w-full text-white">
         {/* Banner */}
         <section
@@ -82,11 +138,10 @@ const Paymentpage = ({ username }) => {
           aria-label={`${username} profile banner`}
         >
           <Image
-            src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/4842667/452146dcfeb04f38853368f554aadde1/eyJ3Ijo5NjAsIndlIjoxfQ%3D%3D/20.gif?token-hash=73PrwlPNIGDCHsplj7xxSj2evDXadHP_utXkWveuQGY%3D&token-time=1788480000"
+            src="/cover.gif"
             alt={`${username} profile banner`}
             fill
             priority
-            unoptimized
             sizes="100vw"
             className="object-cover"
           />
@@ -189,7 +244,7 @@ const Paymentpage = ({ username }) => {
               />
 
               {paymentDone && (
-                <div className="rounded-md bg-green-500/20 border border-green-500 p-3 text-center text-sm font-medium text-green-300">
+                <div className="rounded-md border border-green-500 bg-green-500/20 p-3 text-center text-sm font-medium text-green-300">
                   🎉 Thank you for your support! Your payment was successful.
                 </div>
               )}
@@ -198,11 +253,12 @@ const Paymentpage = ({ username }) => {
                 type="button"
                 onClick={() => {
                   const amt = paymentform.amount
-                    ? Number.parseInt(paymentform.amount) * 100
+                    ? Number.parseInt(paymentform.amount, 10) * 100
                     : 50000;
+
                   pay(amt);
                 }}
-                className="w-full rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700 cursor-pointer"
+                className="w-full cursor-pointer rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700"
               >
                 Pay {paymentform.amount ? `₹${paymentform.amount}` : ""}
               </button>
@@ -211,7 +267,7 @@ const Paymentpage = ({ username }) => {
                 <button
                   type="button"
                   onClick={() => pay(1000)}
-                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
+                  className="cursor-pointer rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹10
                 </button>
@@ -219,7 +275,7 @@ const Paymentpage = ({ username }) => {
                 <button
                   type="button"
                   onClick={() => pay(2000)}
-                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
+                  className="cursor-pointer rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹20
                 </button>
@@ -227,12 +283,11 @@ const Paymentpage = ({ username }) => {
                 <button
                   type="button"
                   onClick={() => pay(3000)}
-                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
+                  className="cursor-pointer rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
                 >
                   Pay ₹30
                 </button>
               </div>
-
             </div>
           </article>
         </section>

@@ -1,13 +1,17 @@
 "use server";
 
 import Razorpay from "razorpay";
+
 import Payment from "@/models/Payment";
+import User from "@/models/User";
+
 import connectDb from "@/db/connectDb";
 
 export const initiate = async (amount, to_username, paymentform) => {
   await connectDb();
 
   const key_id = (process.env.NEXT_PUBLIC_KEY_ID || "").trim();
+
   const key_secret = (
     process.env.KEY_SECRET ||
     process.env.NEXT_PUBLIC_KEY_SECRET ||
@@ -35,4 +39,29 @@ export const initiate = async (amount, to_username, paymentform) => {
   });
 
   return x;
-};
+};
+
+export const fetchUser = async (username) => {
+  await connectDb();
+
+  let u = await User.findOne({ username: username });
+
+  let user = u.toObject({ flattenObjectIds: true });
+
+  return user;
+};
+
+export const fetchpayments = async (username) => {
+  await connectDb();
+
+  // find all payments sorted by decreasing order of amount and flatten object ids
+  let p = await Payment.find({
+    to_user: username,
+    done: true,
+  })
+    .sort({ amount: -1 })
+    .limit(10)
+    .lean();
+
+  return p;
+};
