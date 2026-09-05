@@ -50,7 +50,7 @@ const Paymentpage = ({ username }) => {
           setcurrentUser({});
         }
 
-        console.log("Payments:", dbpayment);
+        console.log("Payments from database:", dbpayment);
 
         setPayment(dbpayment || []);
       } catch (error) {
@@ -66,6 +66,8 @@ const Paymentpage = ({ username }) => {
       cancelled = true;
     };
   }, [username]);
+
+  console.log("Payment state:", Payment);
 
   const pay = async (amount) => {
     try {
@@ -181,26 +183,34 @@ const Paymentpage = ({ username }) => {
             <h2 className="mb-4 text-xl font-bold">Supporters</h2>
 
             <ul className="w-full space-y-3 text-sm">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-3 rounded-lg bg-gray-800/50 p-2.5"
-                >
-                  <Image
-                    src={user}
-                    alt="Supporter avatar"
-                    width={32}
-                    height={32}
-                    className="shrink-0 rounded-full object-cover"
-                  />
+              {Payment.length > 0 ? (
+                Payment.map((payment, index) => (
+                  <li
+                    key={payment._id || index}
+                    className="flex items-center gap-3 rounded-lg bg-gray-800/50 p-2.5"
+                  >
+                    <Image
+                      src={user}
+                      alt="Supporter avatar"
+                      width={32}
+                      height={32}
+                      className="shrink-0 rounded-full object-cover"
+                    />
 
-                  <span>
-                    Shubham donated{" "}
-                    <strong className="text-green-400">₹30</strong> with a
-                    message &quot;&quot;
-                  </span>
+                    <span>
+                      {payment.user_name || "Anonymous"} donated{" "}
+                      <strong className="text-green-400">
+                        ₹{payment.amount}
+                      </strong>{" "}
+                      with a message &quot;{payment.message || ""}&quot;
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <li className="rounded-lg bg-gray-800/50 p-3 text-center text-gray-400">
+                  No supporters yet
                 </li>
-              ))}
+              )}
             </ul>
           </article>
 

@@ -3,6 +3,7 @@
 import Razorpay from "razorpay";
 
 import Payment from "@/models/Payment";
+
 import User from "@/models/User";
 
 import connectDb from "@/db/connectDb";
@@ -54,7 +55,6 @@ export const fetchUser = async (username) => {
 export const fetchpayments = async (username) => {
   await connectDb();
 
-  // find all payments sorted by decreasing order of amount and flatten object ids
   let p = await Payment.find({
     to_user: username,
     done: true,
@@ -63,5 +63,5 @@ export const fetchpayments = async (username) => {
     .limit(10)
     .lean();
 
-  return p;
+  return JSON.parse(JSON.stringify(p));
 };

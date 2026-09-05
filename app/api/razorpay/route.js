@@ -12,7 +12,6 @@ export const POST = async (req) => {
 
   const orderId = body.razorpay_order_id;
 
-  // Check if order exists in the database (checking both o_id and oid for compatibility)
   let p = await Payment.findOne({
     $or: [{ o_id: orderId }, { oid: orderId }],
   });
@@ -24,9 +23,8 @@ export const POST = async (req) => {
     );
   }
 
-  // Fetch the creator user to check if they have custom Razorpay secret,
-  // otherwise fallback to platform secret from .env
   let user = await User.findOne({ username: p.to_user });
+
   const secret = (
     user?.razorpaysecret ||
     process.env.KEY_SECRET ||
@@ -35,6 +33,7 @@ export const POST = async (req) => {
   ).trim();
 
   let xx = false;
+
   try {
     xx = validatePaymentVerification(
       {
@@ -50,18 +49,19 @@ export const POST = async (req) => {
   }
 
   if (xx) {
-    // Update payment as Done
     const updatedPayment = await Payment.findOneAndUpdate(
       { $or: [{ o_id: orderId }, { oid: orderId }] },
-      { Done: true },
+      { done: true },
       { new: true }
     );
 
-    // Redirect with HTTP 303 (See Other) so browser converts POST to GET
+    console.log("Payment completed:", updatedPayment);
+
     const redirectUrl = new URL(
       `/${updatedPayment.to_user}?paymentdone=true`,
       req.url
     );
+
     return NextResponse.redirect(redirectUrl, 303);
   } else {
     return NextResponse.json(
@@ -69,4 +69,4 @@ export const POST = async (req) => {
       { status: 400 }
     );
   }
-};
+};
