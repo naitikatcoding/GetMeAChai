@@ -140,11 +140,12 @@ const Paymentpage = ({ username }) => {
           aria-label={`${username} profile banner`}
         >
           <Image
-            src="/cover.gif"
+            src={currentUser.coverPic || "/cover.gif"}
             alt={`${username} profile banner`}
             fill
             priority
             sizes="100vw"
+            unoptimized
             className="object-cover"
           />
         </section>
@@ -153,7 +154,10 @@ const Paymentpage = ({ username }) => {
         <section className="flex flex-col items-center">
           <div className="relative z-10 -mt-12.5 h-25 w-25 overflow-hidden rounded-full border-4 border-black">
             <Image
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROTXbyHFWAHpGLA25WVL2_tx4NEY8RFO-6l6qVMPFHDw&s=10"
+              src={
+                currentUser.profilePic ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROTXbyHFWAHpGLA25WVL2_tx4NEY8RFO-6l6qVMPFHDw&s=10"
+              }
               alt={`${username} profile picture`}
               fill
               priority
@@ -164,10 +168,12 @@ const Paymentpage = ({ username }) => {
           </div>
 
           <header className="mt-3 mb-8 text-center">
-            <h1 className="text-xl font-bold">@{username}</h1>
+            <h1 className="text-xl font-bold">
+              @{currentUser.username || username}
+            </h1>
 
             <p className="mt-1 text-sm text-slate-400">
-              Create Digital Art Live
+              {currentUser.name || "Create Digital Art Live"}
             </p>
 
             <p className="text-sm text-slate-400">
@@ -202,7 +208,9 @@ const Paymentpage = ({ username }) => {
                       <strong className="text-green-400">
                         ₹{payment.amount}
                       </strong>{" "}
-                      with a message &quot;{payment.message || ""}&quot;
+                      with a message &quot;
+                      {payment.message || ""}
+                      &quot;
                     </span>
                   </li>
                 ))

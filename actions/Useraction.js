@@ -47,9 +47,58 @@ export const fetchUser = async (username) => {
 
   let u = await User.findOne({ username: username });
 
+  if (!u) {
+    return null;
+  }
+
   let user = u.toObject({ flattenObjectIds: true });
 
   return user;
+};
+
+export const fetchUserByEmail = async (email) => {
+  await connectDb();
+
+  let u = await User.findOne({ email: email });
+
+  if (!u) {
+    return null;
+  }
+
+  return JSON.parse(JSON.stringify(u));
+};
+
+export const updateUser = async (email, userData) => {
+  await connectDb();
+
+  const updatedUser = await User.findOneAndUpdate(
+    { email: email },
+    {
+      name: userData.name,
+      username: userData.username,
+      profilePic: userData.profilePic,
+      coverPic: userData.coverPic,
+      razorpayid: userData.razorpayid,
+      razorpaysecret: userData.razorpaysecret,
+      updatedAt: new Date(),
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!updatedUser) {
+    return {
+      success: false,
+      message: "User not found",
+    };
+  }
+
+  return {
+    success: true,
+    message: "Profile updated successfully",
+  };
 };
 
 export const fetchpayments = async (username) => {
