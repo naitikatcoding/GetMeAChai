@@ -7,6 +7,7 @@ import user from "../app/user.gif";
 import { initiate, fetchUser, fetchpayments } from "@/actions/Useraction";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
 
 const Paymentpage = ({ username }) => {
   const [paymentform, setpaymentform] = useState({
@@ -66,6 +67,21 @@ const Paymentpage = ({ username }) => {
       cancelled = true;
     };
   }, [username]);
+
+  useEffect(() => {
+    if (paymentDone) {
+      toast.success("💳 Payment Successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }, [paymentDone]);
 
   console.log("Payment state:", Payment);
 
@@ -133,10 +149,12 @@ const Paymentpage = ({ username }) => {
         strategy="afterInteractive"
       />
 
-      <main className="w-full text-white">
+      <ToastContainer />
+
+      <main className="w-full max-w-full overflow-x-hidden text-white">
         {/* Banner */}
         <section
-          className="relative h-75 w-full"
+          className="relative h-75 w-full max-w-full overflow-hidden"
           aria-label={`${username} profile banner`}
         >
           <Image
@@ -151,8 +169,8 @@ const Paymentpage = ({ username }) => {
         </section>
 
         {/* Profile */}
-        <section className="flex flex-col items-center">
-          <div className="relative z-10 -mt-12.5 h-25 w-25 overflow-hidden rounded-full border-4 border-black">
+        <section className="flex w-full max-w-full flex-col items-center overflow-x-hidden">
+          <div className="relative z-10 -mt-12.5 h-25 w-25 shrink-0 overflow-hidden rounded-full border-4 border-black">
             <Image
               src={
                 currentUser.profilePic ||
@@ -167,7 +185,7 @@ const Paymentpage = ({ username }) => {
             />
           </div>
 
-          <header className="mt-3 mb-8 text-center">
+          <header className="mt-3 mb-8 max-w-full text-center">
             <h1 className="text-xl font-bold">
               @{currentUser.username || username}
             </h1>
@@ -183,50 +201,54 @@ const Paymentpage = ({ username }) => {
         </section>
 
         {/* Main Content */}
-        <section className="mx-auto mb-15 mt-2.5 flex w-[90%] max-w-6xl flex-wrap justify-center gap-6 px-4">
-          {/* Supporters */}
-          <article className="min-h-80 w-full rounded-lg bg-gray-700 p-6 sm:w-[28rem] md:w-[32rem]">
+        <section className="mx-auto mb-15 mt-2.5 grid w-full max-w-6xl grid-cols-1 gap-6 overflow-x-hidden px-4 md:grid-cols-2">
+          {/* ================= SUPPORTERS ================= */}
+          <article className="box-border h-[30rem] w-full min-w-0 overflow-hidden rounded-lg bg-gray-700 p-6">
             <h2 className="mb-4 text-xl font-bold">Supporters</h2>
 
-            <ul className="w-full space-y-3 text-sm">
-              {Payment.length > 0 ? (
-                Payment.map((payment, index) => (
-                  <li
-                    key={payment._id || index}
-                    className="flex items-center gap-3 rounded-lg bg-gray-800/50 p-2.5"
-                  >
-                    <Image
-                      src={user}
-                      alt="Supporter avatar"
-                      width={32}
-                      height={32}
-                      className="shrink-0 rounded-full object-cover"
-                    />
+            {/* Scrollable supporters area */}
+            <div className="supporters-scroll h-[calc(100%-3rem)] w-full min-w-0 overflow-x-hidden overflow-y-auto">
+              <ul className="w-full min-w-0 space-y-3 pr-2 text-sm">
+                {Payment.length > 0 ? (
+                  Payment.map((payment, index) => (
+                    <li
+                      key={payment._id || index}
+                      className="flex w-full min-w-0 items-center gap-3 rounded-lg bg-gray-800/50 p-2.5"
+                    >
+                      <Image
+                        src={user}
+                        alt="Supporter avatar"
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 shrink-0 rounded-full object-cover"
+                      />
 
-                    <span>
-                      {payment.user_name || "Anonymous"} donated{" "}
-                      <strong className="text-green-400">
-                        ₹{payment.amount}
-                      </strong>{" "}
-                      with a message &quot;
-                      {payment.message || ""}
-                      &quot;
-                    </span>
+                      <span className="min-w-0 flex-1 break-words">
+                        {payment.user_name || "Anonymous"} donated{" "}
+                        <strong className="text-green-400">
+                          ₹{payment.amount}
+                        </strong>{" "}
+                        with a message &quot;
+                        {payment.message || ""}
+                        &quot;
+                      </span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="rounded-lg bg-gray-800/50 p-3 text-center text-gray-400">
+                    No supporters yet
                   </li>
-                ))
-              ) : (
-                <li className="rounded-lg bg-gray-800/50 p-3 text-center text-gray-400">
-                  No supporters yet
-                </li>
-              )}
-            </ul>
+                )}
+              </ul>
+            </div>
           </article>
 
-          {/* Payment */}
-          <article className="min-h-80 w-full rounded-lg bg-gray-700 p-6 sm:w-[28rem] md:w-[32rem]">
-            <h2 className="mb-6 text-xl font-bold">Make a Payment</h2>
+          {/* ================= PAYMENT ================= */}
+          <article className="box-border h-[30rem] w-full min-w-0 overflow-hidden rounded-lg bg-gray-700 p-6">
+            <h2 className="mb-5 text-xl font-bold">Make a Payment</h2>
 
-            <div className="w-full space-y-4">
+            <div className="w-full min-w-0 space-y-3">
+              {/* Name */}
               <input
                 id="user_name"
                 name="user_name"
@@ -235,9 +257,10 @@ const Paymentpage = ({ username }) => {
                 type="text"
                 placeholder="Enter Name"
                 autoComplete="name"
-                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                className="box-border w-full max-w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
               />
 
+              {/* Message */}
               <input
                 id="message"
                 name="message"
@@ -245,9 +268,10 @@ const Paymentpage = ({ username }) => {
                 onChange={handlechange}
                 type="text"
                 placeholder="Enter Message"
-                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                className="box-border w-full max-w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
               />
 
+              {/* Amount */}
               <input
                 id="amount"
                 name="amount"
@@ -258,15 +282,17 @@ const Paymentpage = ({ username }) => {
                 step="1"
                 placeholder="Enter Amount"
                 inputMode="numeric"
-                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                className="box-border w-full max-w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
               />
 
+              {/* Payment success message */}
               {paymentDone && (
                 <div className="rounded-md border border-green-500 bg-green-500/20 p-3 text-center text-sm font-medium text-green-300">
                   🎉 Thank you for your support! Your payment was successful.
                 </div>
               )}
 
+              {/* Main Pay Button */}
               <button
                 type="button"
                 onClick={() => {
@@ -281,7 +307,8 @@ const Paymentpage = ({ username }) => {
                 Pay {paymentform.amount ? `₹${paymentform.amount}` : ""}
               </button>
 
-              <div className="flex gap-2 pt-2">
+              {/* Quick Payment Buttons */}
+              <div className="flex flex-wrap gap-2 pt-1">
                 <button
                   type="button"
                   onClick={() => pay(1000)}
