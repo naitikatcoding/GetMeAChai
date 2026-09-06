@@ -76,13 +76,17 @@ const Page = () => {
   };
 
   return (
-    <div>
-      <div className="min-h-screen flex items-center justify-center px-4 mb-32 mt-20">
-        <div className="w-full max-w-2xl rounded-lg bg-slate-800 p-8 shadow-xl">
+    <div className="w-full">
+      <div className="min-h-[calc(100vh-160px)] flex items-center justify-center px-3 sm:px-6 py-8 sm:py-16">
+        <div className="w-full max-w-2xl rounded-xl bg-slate-800/90 border border-slate-700/60 p-5 sm:p-8 shadow-xl">
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-6 text-center sm:text-left border-b border-slate-700/80 pb-4">
+            Welcome to your Dashboard
+          </h1>
+
           <div className="space-y-4">
 
             <div>
-              <label className="mb-1 block text-sm text-white">
+              <label className="mb-1 block text-xs sm:text-sm font-medium text-slate-200">
                 Name
               </label>
               <input
@@ -90,12 +94,12 @@ const Page = () => {
                 value={form.name}
                 onChange={handlechange}
                 type="text"
-                className="w-full rounded-md bg-slate-600 px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md bg-slate-700/80 border border-slate-600 px-3.5 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-white">
+              <label className="mb-1 block text-xs sm:text-sm font-medium text-slate-200">
                 Email
               </label>
               <input
@@ -103,12 +107,12 @@ const Page = () => {
                 value={form.email}
                 type="email"
                 readOnly
-                className="w-full rounded-md bg-slate-600 px-4 py-2 text-white outline-none opacity-70"
+                className="w-full rounded-md bg-slate-700/80 border border-slate-600 px-3.5 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-white outline-none opacity-60 cursor-not-allowed"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-white">
+              <label className="mb-1 block text-xs sm:text-sm font-medium text-slate-200">
                 Username
               </label>
               <input
@@ -116,12 +120,12 @@ const Page = () => {
                 value={form.username}
                 onChange={handlechange}
                 type="text"
-                className="w-full rounded-md bg-slate-600 px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md bg-slate-700/80 border border-slate-600 px-3.5 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-white">
+              <label className="mb-1 block text-xs sm:text-sm font-medium text-slate-200">
                 Profile Picture
               </label>
               <input
@@ -130,12 +134,12 @@ const Page = () => {
                 onChange={handlechange}
                 type="text"
                 placeholder="Enter profile picture URL"
-                className="w-full rounded-md bg-slate-600 px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md bg-slate-700/80 border border-slate-600 px-3.5 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-white outline-none focus:ring-2 focus:ring-blue-500 transition placeholder:text-slate-400"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-white">
+              <label className="mb-1 block text-xs sm:text-sm font-medium text-slate-200">
                 Cover Picture
               </label>
               <input
@@ -144,12 +148,12 @@ const Page = () => {
                 onChange={handlechange}
                 type="text"
                 placeholder="Enter cover picture URL"
-                className="w-full rounded-md bg-slate-600 px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md bg-slate-700/80 border border-slate-600 px-3.5 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-white outline-none focus:ring-2 focus:ring-blue-500 transition placeholder:text-slate-400"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-white">
+              <label className="mb-1 block text-xs sm:text-sm font-medium text-slate-200">
                 Razorpay ID
               </label>
               <input
@@ -157,12 +161,12 @@ const Page = () => {
                 value={form.razorpayid}
                 onChange={handlechange}
                 type="text"
-                className="w-full rounded-md bg-slate-600 px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md bg-slate-700/80 border border-slate-600 px-3.5 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm text-white">
+              <label className="mb-1 block text-xs sm:text-sm font-medium text-slate-200">
                 Razorpay Secret
               </label>
               <input
@@ -170,12 +174,12 @@ const Page = () => {
                 value={form.razorpaysecret}
                 onChange={handlechange}
                 type="password"
-                className="w-full rounded-md bg-slate-600 px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md bg-slate-700/80 border border-slate-600 px-3.5 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
             </div>
 
             {message && (
-              <p className="text-center text-sm text-green-400">
+              <p className="text-center text-sm font-medium text-green-400 py-1">
                 {message}
               </p>
             )}
@@ -183,7 +187,7 @@ const Page = () => {
             <button
               type="button"
               onClick={handleSave}
-              className="w-full rounded-md bg-blue-500 py-2 text-sm font-medium text-white transition hover:bg-blue-600"
+              className="w-full rounded-md bg-blue-600 hover:bg-blue-500 active:scale-[0.99] py-2.5 text-sm sm:text-base font-semibold text-white transition cursor-pointer mt-2 shadow-lg"
             >
               Save
             </button>

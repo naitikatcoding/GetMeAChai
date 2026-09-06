@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import Script from "next/script";
 import Image from "next/image";
 import user from "../app/user.gif";
-import { initiate, fetchUser, fetchpayments } from "@/actions/Useraction";
+import { initiate } from "@/actions/Useraction";
 import { useSession } from "next-auth/react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
 
 const Paymentpage = ({ username }) => {
   const [paymentform, setpaymentform] = useState({
@@ -16,17 +15,11 @@ const Paymentpage = ({ username }) => {
     amount: "",
   });
 
-  const [currentUser, setcurrentUser] = useState({});
-  const [Payment, setPayment] = useState([]);
-
   const searchParams = useSearchParams();
-  const router = useRouter();
-
   const paymentDone = searchParams.get("paymentdone") === "true";
 
   const { data: session } = useSession();
 
-  const toastShown = useRef(false);
 
   const handlechange = (e) => {
     setpaymentform({
@@ -35,129 +28,48 @@ const Paymentpage = ({ username }) => {
     });
   };
 
-  useEffect(() => {
-    if (!username) return;
-
-    let cancelled = false;
-
-    const loadData = async () => {
-      try {
-        const [u, dbpayment] = await Promise.all([
-          fetchUser(username),
-          fetchpayments(username),
-        ]);
-
-        if (cancelled) return;
-
-        if (u) {
-          setcurrentUser(u);
-        } else {
-          setcurrentUser({});
-        }
-
-        console.log("Payments from database:", dbpayment);
-
-        setPayment(dbpayment || []);
-      } catch (error) {
-        if (!cancelled) {
-          console.error("Error fetching user/payment data:", error);
-        }
-      }
-    };
-
-    loadData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [username]);
-
-  // Show payment success toast only once
-  // and remove paymentdone=true from the URL
-  useEffect(() => {
-    if (!paymentDone || toastShown.current) return;
-
-    toastShown.current = true;
-
-    toast.success("💳 Payment Successful!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
-
-    // Remove ?paymentdone=true from the URL
-    router.replace(window.location.pathname);
-  }, [paymentDone, router]);
-
-  console.log("Payment state:", Payment);
+  const getData = async () => {
+    const u = await fetch(username)
+  }
 
   const pay = async (amount) => {
-    try {
-      if (!window.Razorpay) {
-        console.error("Razorpay script has not loaded yet.");
-        alert("Payment system is still loading. Please try again.");
-        return;
-      }
+    const a = await initiate(amount, username, paymentform);
 
-      const a = await initiate(amount, username, paymentform);
+    const orderId = a.id;
 
-      if (!a || !a.id) {
-        console.error("Razorpay order was not created.");
-        alert("Unable to create payment order. Please try again.");
-        return;
-      }
+    // Use current origin so callback works regardless of port or domain
+    const callbackUrl =
+      typeof window !== "undefined" && window.location.origin
+        ? `${window.location.origin}/api/razorpay`
+        : (process.env.NEXT_PUBLIC_CALLBACK_URL || "http://localhost:3000/api/razorpay");
 
-      const orderId = a.id;
+    const options = {
+      key: (process.env.NEXT_PUBLIC_KEY_ID || "").trim(),
+      amount: amount,
+      currency: "INR",
+      name: "Get Me A Chai",
+      description: "Test Transaction",
+      image: "https://example.com/your_logo",
+      order_id: orderId,
+      callback_url: callbackUrl,
 
-      const callbackUrl =
-        typeof window !== "undefined" && window.location.origin
-          ? `${window.location.origin}/api/razorpay`
-          : process.env.NEXT_PUBLIC_CALLBACK_URL ||
-            "http://localhost:3000/api/razorpay";
+      prefill: {
+        name: paymentform.user_name || session?.user?.name || "",
+        email: session?.user?.email || "",
+      },
 
-      const options = {
-        key: (process.env.NEXT_PUBLIC_KEY_ID || "").trim(),
-        amount: amount,
-        currency: "INR",
-        name: "Get Me A Chai",
-        description: "Test Transaction",
-        image: "/cover.gif",
-        order_id: orderId,
-        callback_url: callbackUrl,
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
 
-        prefill: {
-          name: paymentform.user_name || session?.user?.name || "",
-          email: session?.user?.email || "",
-        },
+      theme: {
+        color: "#3399cc",
+      },
+    };
 
-        notes: {
-          address: "Razorpay Corporate Office",
-        },
-
-        theme: {
-          color: "#3399cc",
-        },
-      };
-
-      const rzp1 = new window.Razorpay(options);
-
-      rzp1.open();
-    } catch (error) {
-      console.error("Payment error:", error);
-      alert("Something went wrong while starting the payment.");
-    }
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
   };
-
-  // Check whether the entered amount is valid
-  const isAmountValid =
-    paymentform.amount !== "" &&
-    Number(paymentform.amount) > 0 &&
-    Number.isFinite(Number(paymentform.amount));
 
   return (
     <>
@@ -166,33 +78,29 @@ const Paymentpage = ({ username }) => {
         strategy="afterInteractive"
       />
 
-      <ToastContainer />
 
-      <main className="w-full max-w-full overflow-x-hidden text-white">
+      <main className="w-full text-white">
         {/* Banner */}
         <section
-          className="relative z-0 h-75 w-full max-w-full"
+          className="relative h-75 w-full"
           aria-label={`${username} profile banner`}
         >
           <Image
-            src={currentUser.coverPic || "/cover.gif"}
+            src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/4842667/452146dcfeb04f38853368f554aadde1/eyJ3Ijo5NjAsIndlIjoxfQ%3D%3D/20.gif?token-hash=73PrwlPNIGDCHsplj7xxSj2evDXadHP_utXkWveuQGY%3D&token-time=1788480000"
             alt={`${username} profile banner`}
             fill
             priority
-            sizes="100vw"
             unoptimized
+            sizes="100vw"
             className="object-cover"
           />
         </section>
 
         {/* Profile */}
-        <section className="relative z-20 -mt-12.5 flex w-full max-w-full flex-col items-center overflow-x-hidden">
-          <div className="relative z-30 h-25 w-25 shrink-0 overflow-hidden rounded-full border-4 border-black bg-gray-800">
+        <section className="flex flex-col items-center">
+          <div className="relative z-10 -mt-12.5 h-25 w-25 overflow-hidden rounded-full border-4 border-black">
             <Image
-              src={
-                currentUser.profilePic ||
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROTXbyHFWAHpGLA25WVL2_tx4NEY8RFO-6l6qVMPFHDw&s=10"
-              }
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROTXbyHFWAHpGLA25WVL2_tx4NEY8RFO-6l6qVMPFHDw&s=10"
               alt={`${username} profile picture`}
               fill
               priority
@@ -202,13 +110,11 @@ const Paymentpage = ({ username }) => {
             />
           </div>
 
-          <header className="mt-3 mb-8 max-w-full text-center">
-            <h1 className="text-xl font-bold">
-              @{currentUser.username || username}
-            </h1>
+          <header className="mt-3 mb-8 text-center">
+            <h1 className="text-xl font-bold">@{username}</h1>
 
             <p className="mt-1 text-sm text-slate-400">
-              {currentUser.name || "Create Digital Art Live"}
+              Create Digital Art Live
             </p>
 
             <p className="text-sm text-slate-400">
@@ -218,54 +124,40 @@ const Paymentpage = ({ username }) => {
         </section>
 
         {/* Main Content */}
-        <section className="mx-auto mb-15 mt-2.5 grid w-full max-w-6xl grid-cols-1 gap-6 overflow-x-hidden px-4 md:grid-cols-2">
+        <section className="mx-auto mb-15 mt-2.5 flex w-[90%] max-w-6xl flex-wrap justify-center gap-6 px-4">
           {/* Supporters */}
-          <article className="box-border h-[30rem] w-full min-w-0 overflow-hidden rounded-lg bg-gray-700 p-6">
+          <article className="min-h-80 w-full rounded-lg bg-gray-700 p-6 sm:w-[28rem] md:w-[32rem]">
             <h2 className="mb-4 text-xl font-bold">Supporters</h2>
 
-            {/* Scrollable supporters area */}
-            <div className="supporters-scroll h-[calc(100%-3rem)] w-full min-w-0 overflow-x-hidden overflow-y-auto">
-              <ul className="w-full min-w-0 space-y-3 pr-2 text-sm">
-                {Payment.length > 0 ? (
-                  Payment.map((payment, index) => (
-                    <li
-                      key={payment._id || index}
-                      className="flex w-full min-w-0 items-center gap-3 rounded-lg bg-gray-800/50 p-2.5"
-                    >
-                      <Image
-                        src={user}
-                        alt="Supporter avatar"
-                        width={32}
-                        height={32}
-                        className="h-8 w-8 shrink-0 rounded-full object-cover"
-                      />
+            <ul className="w-full space-y-3 text-sm">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-3 rounded-lg bg-gray-800/50 p-2.5"
+                >
+                  <Image
+                    src={user}
+                    alt="Supporter avatar"
+                    width={32}
+                    height={32}
+                    className="shrink-0 rounded-full object-cover"
+                  />
 
-                      <span className="min-w-0 flex-1 break-words">
-                        {payment.user_name || "Anonymous"} donated{" "}
-                        <strong className="text-green-400">
-                          ₹{payment.amount}
-                        </strong>{" "}
-                        with a message &quot;
-                        {payment.message || ""}
-                        &quot;
-                      </span>
-                    </li>
-                  ))
-                ) : (
-                  <li className="rounded-lg bg-gray-800/50 p-3 text-center text-gray-400">
-                    No supporters yet
-                  </li>
-                )}
-              </ul>
-            </div>
+                  <span>
+                    Shubham donated{" "}
+                    <strong className="text-green-400">₹30</strong> with a
+                    message &quot;&quot;
+                  </span>
+                </li>
+              ))}
+            </ul>
           </article>
 
           {/* Payment */}
-          <article className="box-border h-[30rem] w-full min-w-0 overflow-hidden rounded-lg bg-gray-700 p-6">
-            <h2 className="mb-5 text-xl font-bold">Make a Payment</h2>
+          <article className="min-h-80 w-full rounded-lg bg-gray-700 p-6 sm:w-[28rem] md:w-[32rem]">
+            <h2 className="mb-6 text-xl font-bold">Make a Payment</h2>
 
-            <div className="w-full min-w-0 space-y-3">
-              {/* Name */}
+            <div className="w-full space-y-4">
               <input
                 id="user_name"
                 name="user_name"
@@ -274,10 +166,9 @@ const Paymentpage = ({ username }) => {
                 type="text"
                 placeholder="Enter Name"
                 autoComplete="name"
-                className="box-border w-full max-w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
               />
 
-              {/* Message */}
               <input
                 id="message"
                 name="message"
@@ -285,10 +176,9 @@ const Paymentpage = ({ username }) => {
                 onChange={handlechange}
                 type="text"
                 placeholder="Enter Message"
-                className="box-border w-full max-w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
               />
 
-              {/* Amount */}
               <input
                 id="amount"
                 name="amount"
@@ -299,45 +189,33 @@ const Paymentpage = ({ username }) => {
                 step="1"
                 placeholder="Enter Amount"
                 inputMode="numeric"
-                className="box-border w-full max-w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded-md border border-gray-600 bg-gray-800 p-3 text-sm focus:border-indigo-500 focus:outline-none"
               />
 
-              {/* Payment success message */}
               {paymentDone && (
-                <div className="rounded-md border border-green-500 bg-green-500/20 p-3 text-center text-sm font-medium text-green-300">
+                <div className="rounded-md bg-green-500/20 border border-green-500 p-3 text-center text-sm font-medium text-green-300">
                   🎉 Thank you for your support! Your payment was successful.
                 </div>
               )}
 
-              {/* Main Pay Button */}
               <button
                 type="button"
-                disabled={!isAmountValid}
                 onClick={() => {
-                  if (!isAmountValid) return;
-
-                  const amt =
-                    Number.parseInt(paymentform.amount, 10) * 100;
-
+                  const amt = paymentform.amount
+                    ? Number.parseInt(paymentform.amount) * 100
+                    : 50000;
                   pay(amt);
                 }}
-                className={`w-full rounded-md px-4 py-3 text-sm font-semibold text-white transition duration-150 ${
-                  isAmountValid
-                    ? "cursor-pointer bg-indigo-600 hover:bg-indigo-700"
-                    : "cursor-not-allowed bg-gray-500 opacity-50"
-                }`}
+                className="w-full rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700 cursor-pointer"
               >
-                {isAmountValid
-                  ? `Pay ₹${paymentform.amount}`
-                  : "Enter Amount"}
+                Pay {paymentform.amount ? `₹${paymentform.amount}` : ""}
               </button>
 
-              {/* Quick Payment Buttons */}
-              <div className="flex flex-wrap gap-2 pt-1">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => pay(1000)}
-                  className="cursor-pointer rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
+                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
                 >
                   Pay ₹10
                 </button>
@@ -345,7 +223,7 @@ const Paymentpage = ({ username }) => {
                 <button
                   type="button"
                   onClick={() => pay(2000)}
-                  className="cursor-pointer rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
+                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
                 >
                   Pay ₹20
                 </button>
@@ -353,11 +231,12 @@ const Paymentpage = ({ username }) => {
                 <button
                   type="button"
                   onClick={() => pay(3000)}
-                  className="cursor-pointer rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600"
+                  className="rounded border border-gray-600 bg-gray-800 px-3 py-1.5 text-xs hover:bg-gray-600 cursor-pointer"
                 >
                   Pay ₹30
                 </button>
               </div>
+
             </div>
           </article>
         </section>

@@ -55,11 +55,11 @@ const about = () => {
   );
 
   return (
-    <div>
-      <div className="text-center mx-9">
-        <p className="text-4xl font-extrabold py-16">About Us</p>
-        <div className="flex flex-col gap-15">
-          <p className="font-bold">
+    <div className="w-full">
+      <div className="text-center max-w-4xl mx-auto px-4 sm:px-8 py-8 sm:py-14">
+        <h1 className="text-3xl sm:text-4xl font-extrabold mb-6 sm:mb-8">About Us</h1>
+        <div className="flex flex-col gap-6 text-sm sm:text-base leading-relaxed text-gray-300">
+          <p className="font-bold text-base sm:text-lg text-blue-400">
             &quot;Fueling Creativity, One Cup at a Time&quot;
           </p>
           <p>
@@ -101,46 +101,46 @@ const about = () => {
         </div>
       </div>
 
-      <div className="bg-gray-600 w-[90vw] h-1 mt-16.5 mx-auto opacity-80"></div>
+      <div className="bg-gray-700 w-full max-w-5xl h-px my-6 sm:my-10 mx-auto opacity-60"></div>
 
-      <div className="my-14 flex flex-col items-center">
-        <p className="text-2xl mb-5 font-bold">Why Choose Us</p>
-        <p className="text-4xl font-bold opacity-60 mb-4">
+      <div className="my-10 sm:my-14 flex flex-col items-center px-4 max-w-6xl mx-auto w-full">
+        <span className="text-xl sm:text-2xl mb-2 font-bold text-blue-400">Why Choose Us</span>
+        <h2 className="text-2xl sm:text-4xl font-bold opacity-90 mb-4 text-center">
           Support Creativity and Innovation
-        </p>
-        <p className="w-[40vw] text-center">
+        </h2>
+        <p className="w-full max-w-2xl text-center text-sm sm:text-base text-gray-300 mb-8 sm:mb-14">
           At Get Me A Chai, we empower developers, creators, and influencers by
           connecting them with supporters to fund their projects. No technical
           skills required - our intuitive platform makes it easy to receive
           support and bring your visions to life.
         </p>
-        <ul className="flex mt-20 gap-28 justify-center opacity-90">
-          <li className="bg-[#101013] border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
-            <div className="mb-3 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-sm w-12 h-12">
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 w-full">
+          <li className="bg-[#101013] border border-gray-800 p-6 sm:p-8 flex flex-col items-center justify-center text-center rounded-xl transition hover:border-gray-700">
+            <div className="mb-4 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-lg w-12 h-12 shrink-0">
               {phoneicon}
             </div>
-            <span className="font-bold mb-5">Easy Customization</span>
-            <p className="text-center">
+            <span className="font-bold text-base sm:text-lg mb-3 text-white">Easy Customization</span>
+            <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
               Personalize your campaign page&apos;s look and feel, from color
               schemes to fonts, to match your unique style.
             </p>
           </li>
-          <li className="bg-[#101013] border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
-            <div className="mb-3 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-sm w-12 h-12">
+          <li className="bg-[#101013] border border-gray-800 p-6 sm:p-8 flex flex-col items-center justify-center text-center rounded-xl transition hover:border-gray-700">
+            <div className="mb-4 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-lg w-12 h-12 shrink-0">
               {thunder}
             </div>
-            <span className="font-bold mb-5">High Perfomance</span>
-            <p className="text-center">
+            <span className="font-bold text-base sm:text-lg mb-3 text-white">High Perfomance</span>
+            <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
               Our platform is optimized for fast performance, ensuring your
               supporters can access your campaign quickly and easily.
             </p>
           </li>
-          <li className="bg-[#101013] border-0 p-10 text-wrap w-1/4 h-60 flex flex-col items-center justify-center rounded-lg opacity-70">
-            <div className="mb-3 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-sm w-12 h-12">
+          <li className="bg-[#101013] border border-gray-800 p-6 sm:p-8 flex flex-col items-center justify-center text-center rounded-xl transition hover:border-gray-700">
+            <div className="mb-4 bg-linear-to-b from-[#5046e5] to-[#2b31cb] border border-[#5d4ff0] flex items-center justify-center p-3 rounded-lg w-12 h-12 shrink-0">
               {pencil}
             </div>
-            <span className="font-bold mb-5">Comprehensive Features</span>
-            <p className="text-center">
+            <span className="font-bold text-base sm:text-lg mb-3 text-white">Comprehensive Features</span>
+            <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
               Our platform offers everything you need to run a successful
               campaign, from analytics to support tools.
             </p>

@@ -13,22 +13,22 @@ const Page = () => {
     );
   }
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
-      <div className="flex flex-col items-center mt-15">
+    <div className="min-h-[calc(100vh-140px)] bg-gray-100 py-12 px-4 sm:px-6 flex items-center justify-center">
+      <div className="flex flex-col items-center w-full max-w-sm">
         {/* Heading */}
-        <span className="mb-8 text-3xl font-bold text-black">
+        <h1 className="mb-8 text-2xl sm:text-3xl font-bold text-black text-center">
           Login/Signup To Get Started
-        </span>
+        </h1>
 
         {/* Social Login Buttons */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3.5 w-full items-center">
           {/* Google */}
           <button
             onClick={() => {
               signIn("google" , { callbackUrl: "/dashboard" });
             }}
             type="button"
-            className="cursor-pointer flex w-72 items-center rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <svg
               className="mr-2 h-6 w-6"
@@ -69,7 +69,7 @@ const Page = () => {
           <button
             disabled
             type="button"
-            className="cursor-pointer flex w-72 items-center rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <svg
               className="mr-2 h-6 w-6"
@@ -93,7 +93,7 @@ const Page = () => {
           <button
             disabled
             type="button"
-            className="cursor-pointer flex w-72 items-center rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <svg
               className="mr-2 h-6 w-6"
@@ -117,7 +117,7 @@ const Page = () => {
           <button
             disabled
             type="button"
-            className="cursor-pointer flex w-72 items-center rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <svg
               className="mr-2 h-6 w-6"
@@ -143,7 +143,7 @@ const Page = () => {
               signIn("github" , { callbackUrl: "/dashboard" });
             }}
             type="button"
-            className="cursor-pointer flex w-72 items-center rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <svg
               className="mr-2 h-6 w-6"
@@ -178,7 +178,7 @@ const Page = () => {
           <button
             disabled
             type="button"
-            className="cursor-pointer flex w-72 items-center rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
             <svg
               className="mr-2 h-6 w-6"
