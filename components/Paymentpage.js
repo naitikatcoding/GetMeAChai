@@ -142,6 +142,12 @@ const Paymentpage = ({ username }) => {
     }
   };
 
+  // Check whether the entered amount is valid
+  const isAmountValid =
+    paymentform.amount !== "" &&
+    Number(paymentform.amount) > 0 &&
+    Number.isFinite(Number(paymentform.amount));
+
   return (
     <>
       <Script
@@ -202,7 +208,8 @@ const Paymentpage = ({ username }) => {
 
         {/* Main Content */}
         <section className="mx-auto mb-15 mt-2.5 grid w-full max-w-6xl grid-cols-1 gap-6 overflow-x-hidden px-4 md:grid-cols-2">
-          {/* ================= SUPPORTERS ================= */}
+
+          {/* Supporters */}
           <article className="box-border h-[30rem] w-full min-w-0 overflow-hidden rounded-lg bg-gray-700 p-6">
             <h2 className="mb-4 text-xl font-bold">Supporters</h2>
 
@@ -243,11 +250,12 @@ const Paymentpage = ({ username }) => {
             </div>
           </article>
 
-          {/* ================= PAYMENT ================= */}
+          {/* Payment */}
           <article className="box-border h-[30rem] w-full min-w-0 overflow-hidden rounded-lg bg-gray-700 p-6">
             <h2 className="mb-5 text-xl font-bold">Make a Payment</h2>
 
             <div className="w-full min-w-0 space-y-3">
+
               {/* Name */}
               <input
                 id="user_name"
@@ -295,16 +303,24 @@ const Paymentpage = ({ username }) => {
               {/* Main Pay Button */}
               <button
                 type="button"
+                disabled={!isAmountValid}
                 onClick={() => {
-                  const amt = paymentform.amount
-                    ? Number.parseInt(paymentform.amount, 10) * 100
-                    : 50000;
+                  if (!isAmountValid) return;
+
+                  const amt =
+                    Number.parseInt(paymentform.amount, 10) * 100;
 
                   pay(amt);
                 }}
-                className="w-full cursor-pointer rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-indigo-700"
+                className={`w-full rounded-md px-4 py-3 text-sm font-semibold text-white transition duration-150 ${
+                  isAmountValid
+                    ? "cursor-pointer bg-indigo-600 hover:bg-indigo-700"
+                    : "cursor-not-allowed bg-gray-500 opacity-50"
+                }`}
               >
-                Pay {paymentform.amount ? `₹${paymentform.amount}` : ""}
+                {isAmountValid
+                  ? `Pay ₹${paymentform.amount}`
+                  : "Enter Amount"}
               </button>
 
               {/* Quick Payment Buttons */}
