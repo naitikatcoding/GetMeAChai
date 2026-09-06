@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import Image from "next/image";
 import user from "../app/user.gif";
 import { initiate, fetchUser, fetchpayments } from "@/actions/Useraction";
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 
 const Paymentpage = ({ username }) => {
@@ -20,9 +20,13 @@ const Paymentpage = ({ username }) => {
   const [Payment, setPayment] = useState([]);
 
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const paymentDone = searchParams.get("paymentdone") === "true";
 
   const { data: session } = useSession();
+
+  const toastShown = useRef(false);
 
   const handlechange = (e) => {
     setpaymentform({
@@ -68,20 +72,27 @@ const Paymentpage = ({ username }) => {
     };
   }, [username]);
 
+  // Show payment success toast only once
+  // and remove paymentdone=true from the URL
   useEffect(() => {
-    if (paymentDone) {
-      toast.success("💳 Payment Successful!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    }
-  }, [paymentDone]);
+    if (!paymentDone || toastShown.current) return;
+
+    toastShown.current = true;
+
+    toast.success("💳 Payment Successful!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+
+    // Remove ?paymentdone=true from the URL
+    router.replace(window.location.pathname);
+  }, [paymentDone, router]);
 
   console.log("Payment state:", Payment);
 
@@ -160,7 +171,7 @@ const Paymentpage = ({ username }) => {
       <main className="w-full max-w-full overflow-x-hidden text-white">
         {/* Banner */}
         <section
-          className="relative h-75 w-full max-w-full overflow-hidden"
+          className="relative z-0 h-75 w-full max-w-full"
           aria-label={`${username} profile banner`}
         >
           <Image
@@ -175,8 +186,8 @@ const Paymentpage = ({ username }) => {
         </section>
 
         {/* Profile */}
-        <section className="flex w-full max-w-full flex-col items-center overflow-x-hidden">
-          <div className="relative z-10 -mt-12.5 h-25 w-25 shrink-0 overflow-hidden rounded-full border-4 border-black">
+        <section className="relative z-20 -mt-12.5 flex w-full max-w-full flex-col items-center overflow-x-hidden">
+          <div className="relative z-30 h-25 w-25 shrink-0 overflow-hidden rounded-full border-4 border-black bg-gray-800">
             <Image
               src={
                 currentUser.profilePic ||
@@ -208,7 +219,6 @@ const Paymentpage = ({ username }) => {
 
         {/* Main Content */}
         <section className="mx-auto mb-15 mt-2.5 grid w-full max-w-6xl grid-cols-1 gap-6 overflow-x-hidden px-4 md:grid-cols-2">
-
           {/* Supporters */}
           <article className="box-border h-[30rem] w-full min-w-0 overflow-hidden rounded-lg bg-gray-700 p-6">
             <h2 className="mb-4 text-xl font-bold">Supporters</h2>
@@ -255,7 +265,6 @@ const Paymentpage = ({ username }) => {
             <h2 className="mb-5 text-xl font-bold">Make a Payment</h2>
 
             <div className="w-full min-w-0 space-y-3">
-
               {/* Name */}
               <input
                 id="user_name"

@@ -104,3 +104,5 @@ export default function Home() {
     </>
   );
 }
+
+export const metadata = { title: `Home -GetMeAChai` };

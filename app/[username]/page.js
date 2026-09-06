@@ -1,8 +1,9 @@
-import React, { Suspense } from "react";
+import React, { Suspense }  from "react";
 import Paymentpage from "@/components/Paymentpage";
 
 const Username = async ({ params }) => {
   const { username } = await params;
+ 
 
   return (
     <Suspense fallback={<div className="text-white text-center py-20">Loading...</div>}>
@@ -11,4 +12,6 @@ const Username = async ({ params }) => {
   );
 };
 
-export default Username;
+export default Username;
+
+export const metadata = { title: `Creator's page -GetMeAChai` };

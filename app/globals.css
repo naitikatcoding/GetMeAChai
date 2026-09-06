@@ -1,7 +1,30 @@
 @import "tailwindcss";
 
-
 body {
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   max-width: 100%;
+  overflow-x: hidden;
+}
+
+.supporters-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 transparent;
+}
+
+.supporters-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.supporters-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.supporters-scroll::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 10px;
+}
+
+.supporters-scroll::-webkit-scrollbar-thumb:hover {
+  background: #111111;
 }
