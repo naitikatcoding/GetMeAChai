@@ -1,13 +1,69 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import teaicon from "../app/icon.svg";
+import { fetchUserByEmail } from "@/actions/Useraction";
 
 const Navbar = () => {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [dbUsername, setDbUsername] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetchUserByEmail(session.user.email)
+        .then((user) => {
+          if (user?.username) {
+            setDbUsername(user.username);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load username in Navbar:", err);
+        });
+    }
+  }, [session?.user?.email]);
+
+  const handleYourPage = async (e) => {
+    e.preventDefault();
+    setIsOpen(false);
+
+    if (!session?.user?.email) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const user = await fetchUserByEmail(session.user.email);
+
+      // Check if user has provided all dashboard details
+      const hasAllDetails = Boolean(
+        user &&
+        user.name?.trim() &&
+        user.username?.trim() &&
+        user.profilePic?.trim() &&
+        user.coverPic?.trim() &&
+        user.razorpayid?.trim() &&
+        user.razorpaysecret?.trim()
+      );
+
+      if (!hasAllDetails) {
+        alert("First fill all your details!");
+        router.push("/dashboard");
+        return;
+      }
+
+      router.push(`/${user.username}`);
+    } catch (err) {
+      console.error("Failed to verify user profile details:", err);
+      alert("First fill all your details!");
+      router.push("/dashboard");
+    }
+  };
 
   return (
     <nav className="bg-[#111827] px-3 sm:px-6 w-full">
@@ -67,13 +123,13 @@ const Navbar = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        href={`/${session.user.name}`}
-                        onClick={() => setIsOpen(false)}
-                        className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
+                      <button
+                        type="button"
+                        onClick={handleYourPage}
+                        className="w-full text-left block px-4 py-2 hover:bg-gray-700 hover:text-white cursor-pointer"
                       >
                         Your page
-                      </Link>
+                      </button>
                     </li>
                     <li>
                       <button

@@ -1,4 +1,12 @@
 import mongoose from "mongoose";
+import dns from "dns";
+
+// Ensure MongoDB SRV queries resolve reliably on all environments (especially Windows)
+try {
+  dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+} catch (dnsErr) {
+  // Ignore in environments where setServers is restricted
+}
 
 const connectDb = async () => {
   try {
@@ -6,7 +14,12 @@ const connectDb = async () => {
       return mongoose.connection;
     }
 
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    const mongoUri = (process.env.MONGO_URI || "").trim();
+    if (!mongoUri) {
+      throw new Error("MONGO_URI environment variable is not defined or empty.");
+    }
+
+    const conn = await mongoose.connect(mongoUri);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     return conn;
   } catch (error) {
@@ -15,4 +28,5 @@ const connectDb = async () => {
   }
 };
 
-export default connectDb;
+export default connectDb;
+

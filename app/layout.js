@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import SessionWrapper from "@/components/SessionWrapper";
+import ToastProvider from "@/components/ToastProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
             <div className="absolute left-0 sm:left-10 right-0 top-[-30%] h-120 md:h-175 w-120 md:w-175 rounded-full bg-[radial-gradient(circle_400px_at_50%_300px,#fbfbfb36,transparent)]"></div>
           </div>
 
+          <ToastProvider />
           {/* Content Structure */}
           <Navbar />
           <main className="grow min-h-screen w-full max-w-full overflow-x-hidden">{children}</main>
