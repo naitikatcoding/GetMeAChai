@@ -51,6 +51,9 @@
 - [Deployment](#-deployment)
 - [Troubleshooting](#-troubleshooting)
 - [Limitations and Future Improvements](#-limitations-and-future-improvements)
+- [Contributing](#-contributing)
+- [Support](#-support)
+- [License](#-license)
 - [Quick Start](#-quick-start)
 
 ---
@@ -452,6 +455,17 @@ The project can be deployed to any Next.js-compatible host, such as **Vercel**:
 5. **Razorpay callback considerations:** the client computes the callback URL from `window.location.origin` at payment time, so no extra Razorpay-side redirect URL configuration is required — just ensure `NEXT_PUBLIC_CALLBACK_URL` is set correctly as a fallback for non-browser contexts.
 6. **MongoDB network access:** if using MongoDB Atlas, allow-list your hosting provider's outbound IP ranges (or use `0.0.0.0/0` only for testing, never for production).
 
+### Deployment Checklist
+
+- [ ] Environment variables are set in your hosting provider
+- [ ] Google OAuth app has production callback URLs configured
+- [ ] GitHub OAuth app has production callback URLs configured
+- [ ] MongoDB cluster has network access rules configured for your hosting provider
+- [ ] HTTPS is enabled for your production domain
+- [ ] Razorpay is configured for live keys (if moving from test)
+- [ ] Database backups are enabled
+- [ ] Error monitoring/logging is configured (optional but recommended)
+
 ---
 
 <div align="center">
@@ -487,6 +501,95 @@ The project can be deployed to any Next.js-compatible host, such as **Vercel**:
 - **Limited creator analytics** — the public page shows only a live supporter list and total raised; there are no charts, exports, or historical trends.
 - **Minimal validation and hardening** — usernames, URLs, and payment amounts could use stricter server-side validation, and there's no rate limiting on API routes.
 
+### Potential Enhancements
+- Implement S3/cloud storage for image uploads instead of requiring external URLs
+- Add creator dashboard analytics (monthly earnings, supporter trends, etc.)
+- Enable refund/payment dispute handling through Razorpay webhooks
+- Add support for additional payment methods (Stripe, PayPal, etc.)
+- Implement rate limiting on payment API endpoints
+- Add email notifications for successful payments
+- Create admin dashboard for platform oversight and analytics
+- Add custom support page styling options for creators
+
+---
+
+<div align="center">
+
+## 🤝 Contributing
+
+</div>
+
+We welcome contributions to **GetMeAChai**! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+
+### How to Contribute
+
+1. **Fork the repository** — click the "Fork" button on GitHub.
+2. **Clone your fork** to your local machine:
+   ```bash
+   git clone https://github.com/your-username/GetMeAChai.git
+   cd GetMeAChai
+   ```
+3. **Create a new branch** for your feature or fix:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+4. **Make your changes** — ensure your code follows the project's style and passes ESLint (`npm run lint`).
+5. **Test locally** — verify the app works as expected with `npm run dev`.
+6. **Commit your changes** with a clear, descriptive message:
+   ```bash
+   git commit -m "Add feature: description of your change"
+   ```
+7. **Push to your fork**:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+8. **Open a Pull Request** on the main repository with a detailed description of your changes.
+
+### Contribution Guidelines
+
+- Keep commits atomic and focused on a single feature or fix.
+- Write clear commit messages that explain the *why* behind your changes.
+- Ensure all existing tests pass and add new tests for new functionality.
+- Follow the existing code style (use ESLint for guidance).
+- Update documentation (README, comments, etc.) if your changes affect how the app works.
+- Be respectful and constructive in all discussions and reviews.
+
+---
+
+<div align="center">
+
+## 💬 Support
+
+</div>
+
+### Getting Help
+
+- **Documentation** — Read this README thoroughly for setup and usage guidance.
+- **Issues** — Check the [GitHub Issues](https://github.com/naitikatcoding/GetMeAChai/issues) page to see if your question has been asked before.
+- **Contact** — Use the `/contact` page on the site for direct inquiries.
+- **Community** — Engage with other developers and creators in discussions or issues.
+
+### Reporting Bugs
+
+If you encounter a bug, please open a [GitHub Issue](https://github.com/naitikatcoding/GetMeAChai/issues) with:
+- A clear title and description
+- Steps to reproduce the issue
+- Expected vs. actual behavior
+- Your environment details (Node version, OS, browser, etc.)
+- Any relevant error messages or logs
+
+---
+
+<div align="center">
+
+## 📜 License
+
+</div>
+
+This project is licensed under the **MIT License** — see the [LICENSE](https://github.com/naitikatcoding/GetMeAChai/blob/main/LICENSE) file for details.
+
+You are free to use, modify, and distribute this project for personal or commercial purposes, provided you include the original license and copyright notice.
+
 ---
 
 <div align="center">
@@ -500,5 +603,17 @@ The project can be deployed to any Next.js-compatible host, such as **Vercel**:
 **Creator:** Login with Google/GitHub → open Dashboard → fill in name, username, image URLs, and Razorpay keys → Save Profile → share your `/<username>` link.
 
 **Supporter:** Visit a creator's `/<username>` page → enter your name, message, and amount → pay via Razorpay Checkout → see your support appear instantly in the supporters list.
+
+---
+
+<div align="center">
+
+## 👨‍💻 Built with ❤️
+
+**GetMeAChai** is an open-source project created to empower creators and enable supporters worldwide. Happy fundraising! ☕
+
+[![GitHub stars](https://img.shields.io/github/stars/naitikatcoding/GetMeAChai?style=social)](https://github.com/naitikatcoding/GetMeAChai)
+[![GitHub forks](https://img.shields.io/github/forks/naitikatcoding/GetMeAChai?style=social)](https://github.com/naitikatcoding/GetMeAChai)
+[![GitHub issues](https://img.shields.io/github/issues/naitikatcoding/GetMeAChai?style=social)](https://github.com/naitikatcoding/GetMeAChai/issues)
 
 </div>
